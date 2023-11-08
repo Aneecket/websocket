@@ -1,0 +1,8 @@
+## run websocket
+node server.js
+
+## run clinet application
+
+node client.js
+
+##do the apache /nginx changes for websocket protocol
