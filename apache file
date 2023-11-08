@@ -1,0 +1,56 @@
+@@@ httpd
+
+<VirtualHost *:80>
+  ProxyPreserveHost On
+  ProxyRequests Off
+  ServerName devopstest.insurancedekho.com
+  ProxyPass / http://127.0.0.1:8081/
+  ProxyPassReverse / http://127.0.0.1:8081/
+  ErrorLog /var/log/httpd/devopstest.insurancedekho.com_error_log
+  CustomLog /var/log/httpd/devopstest.insurancedekho.com_access_log combined
+  Timeout 2400
+  ProxyTimeout 2400
+  ProxyBadHeader Ignore
+</VirtualHost>
+
+
+
+<VirtualHost *:80>
+  ProxyPreserveHost On
+  ProxyRequests Off
+  ServerName devopstestsocket.insurancedekho.com
+    ProxyPass / ws://localhost:8080
+    ProxyPassReverse / ws://localhost:8080
+#  ProxyPass / http://127.0.0.1:8080/
+#  ProxyPassReverse / http://127.0.0.1:8080/
+  ErrorLog /var/log/httpd/devopstestsocket.insurancedekho.com_error_log
+  CustomLog /var/log/httpd/devopstestsocket.insurancedekho.com_access_log combined
+  Timeout 2400
+  ProxyTimeout 2400
+  ProxyBadHeader Ignore
+</VirtualHost>
+
+
+#### nginx 
+server {
+    listen 81;
+    server_name devopstestsocket.insurancedekho.com;
+access_log   /var/log/nginx/devopstestsocket.insurancedekho.com_access.log  upstream_time;
+error_log  /var/log/nginx/devopstestsocket.insurancedekho.com_error.log  crit;
+
+    location / {
+    proxy_pass http://localhost:8080;
+    proxy_http_version 1.1;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection "upgrade";
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+    proxy_set_header X-Forwarded-Host $host;
+    proxy_set_header X-Forwarded-Port $server_port;
+    proxy_set_header X-Forwarded-Server $host;
+    proxy_set_header X-Forwarded-Scheme $scheme;
+
+    }
+}
